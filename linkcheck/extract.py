@@ -67,7 +67,9 @@ def drop_truncated(urls: set[str]) -> set[str]:
 def from_annotations(reader: PdfReader) -> list[Link]:
     links: list[Link] = []
     for i, page in enumerate(reader.pages, start=1):
-        for annot in page.get("/Annots") or []:
+        annots = page.get("/Annots")
+        annots = annots.get_object() if annots is not None else []
+        for annot in annots or []:
             obj = annot.get_object()
             action = obj.get("/A")
             if action is None:
@@ -146,14 +148,19 @@ def from_ocr(pdf_path: Path, dpi: int = 200, footer_band: float = 0.045) -> list
     return links
 
 
-def from_manifest(path: Path) -> list[Link]:
-    """Optional CSV with columns page,anchor,url - for links you recover by
-    hand or export from InDesign's Hyperlinks panel."""
+def from_manifest(path: Path, volume: str | None = None) -> list[Link]:
+    """Optional CSV of links recovered by hand or exported from InDesign's
+    Hyperlinks panel. Columns: volume (optional), page, anchor, url.
+    Rows whose volume doesn't match this PDF's file name are skipped, so one
+    manifest can cover several volumes."""
     import csv
 
     links: list[Link] = []
     with open(path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
+            row_vol = (row.get("volume") or "").strip()
+            if volume and row_vol and row_vol != volume:
+                continue
             if row.get("url"):
                 links.append(Link(
                     url=row["url"].strip(),
@@ -168,6 +175,8 @@ def extract(pdf_path: Path, use_ocr: str = "auto", manifest: Path | None = None)
     """Extract links from one PDF.
 
     use_ocr: "auto" (only if the PDF has no text layer), "always", or "never".
+    Manifest rows take precedence: on any page the manifest covers, OCR
+    guesses for that page are dropped.
     """
     reader = PdfReader(str(pdf_path))
     n_pages = len(reader.pages)
@@ -179,7 +188,10 @@ def extract(pdf_path: Path, use_ocr: str = "auto", manifest: Path | None = None)
     if use_ocr == "always" or (use_ocr == "auto" and flattened):
         ocr_links = from_ocr(pdf_path)
 
-    manifest_links = from_manifest(manifest) if manifest else []
+    manifest_links = from_manifest(manifest, pdf_path.name) if manifest else []
+    covered = {l.page for l in manifest_links}
+    ocr_links = [l for l in ocr_links if l.page not in covered]
+
     meta = reader.metadata or {}
     return {
         "file": pdf_path.name,

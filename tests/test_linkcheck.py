@@ -92,3 +92,71 @@ def test_vol1_extracts_all_footer_urls():
     assert "https://hr.nih.gov/about/hr-contacts?ic=All" in urls
     assert len(urls) == 11
     assert len(vol["links"]) == 22  # one footer URL per content page
+
+
+def test_drift_report_counts_only_verified_rows():
+    from linkcheck.drift import to_markdown
+    rows = compare([
+        {"role_key": "A", "pdf_page": "1", "book_name": "Ann Smith", "current_name": "Bob Jones"},
+        {"role_key": "B", "pdf_page": "2", "book_name": "Cy Lee", "current_name": "Cy Lee"},
+        {"role_key": "C", "pdf_page": "3", "book_name": "Di Park", "current_name": ""},
+    ])
+    md = to_markdown(rows, "")
+    assert "**1 of 2** verified positions" in md
+    assert "1 not verified" in md
+
+
+# --- Manifest --------------------------------------------------------------
+
+def test_manifest_filters_by_volume(tmp_path):
+    from linkcheck.extract import from_manifest
+    m = tmp_path / "m.csv"
+    m.write_text(
+        "volume,page,anchor,url\n"
+        "vol-2.pdf,4,footer,https://a.gov/x\n"
+        "vol-3.pdf,4,footer,https://b.gov/y\n"
+        ",9,any volume,https://c.gov/z\n"
+    )
+    urls = {l.url for l in from_manifest(m, "vol-2.pdf")}
+    assert urls == {"https://a.gov/x", "https://c.gov/z"}
+
+
+# --- Inventory round trip ------------------------------------------------
+
+def test_inventory_round_trip(tmp_path):
+    from linkcheck.cli import load_inventory, save_inventory
+    from linkcheck.extract import Link
+    vols = [{"file": "v.pdf", "pages": 3, "producer": "PDFBase,WanCai.GZ", "flattened": True,
+             "links": [Link("https://a.gov/", 2, "ocr")]}]
+    p = tmp_path / "inv.csv"
+    save_inventory(vols, p)
+    back = load_inventory(p)
+    assert back[0]["producer"] == "PDFBase,WanCai.GZ"   # comma survives CSV quoting
+    assert back[0]["links"][0].url == "https://a.gov/"
+
+
+# --- End to end on the other volumes --------------------------------------
+
+VOLS = Path(__file__).parent.parent / "volumes"
+MANIFEST = Path(__file__).parent.parent / "data" / "footer-manifest.csv"
+
+
+@pytest.mark.skipif(not (VOLS / "SLTB-vol-4.pdf").exists(), reason="volume PDF not committed")
+def test_vol4_reads_clickable_links():
+    # DAB Essentials was exported with live links, some stored as indirect
+    # /Annots arrays - the case that crashed the first version.
+    from linkcheck.extract import extract
+    vol = extract(VOLS / "SLTB-vol-4.pdf")
+    annots = [l for l in vol["links"] if l.method == "annotation"]
+    assert len(annots) == 76
+    assert "https://www.nia.nih.gov/about/staff/hodes-richard" in {l.url for l in annots}
+
+
+@pytest.mark.skipif(not (VOLS / "SLTB-vol-3.pdf").exists(), reason="volume PDF not committed")
+def test_manifest_overrides_ocr_on_covered_pages():
+    from linkcheck.extract import extract
+    vol = extract(VOLS / "SLTB-vol-3.pdf", manifest=MANIFEST)
+    by_page = {}
+    for l in vol["links"]:
+        by_page.setdefault(l.page, set()).add(l.method)
+    assert by_page[4] == {"manifest"} and by_page[5] == {"manifest"}

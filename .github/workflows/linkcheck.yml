@@ -40,7 +40,9 @@ jobs:
       - name: Rebuild leadership drift report
         run: |
           python -m linkcheck.drift data/vol1-leadership.csv \
-            --source-note "Book roster transcribed from SLTB Vol 1. Current roster last captured 2026-09-30; update data/vol1-leadership.csv to refresh."
+            --source-note "Book roster transcribed from SLTB Vol 1 (repeated in DAB Essentials). Current roster last captured 2026-09-30; update data/vol1-leadership.csv to refresh."
+          python -m linkcheck.drift data/vol2-3-nia-leadership.csv --out reports/leadership-drift-nia.md \
+            --source-note "Book roster from SLTB Vol 2 (22 Oct 2024) and Vol 3 (1 Dec 2024). Current roster last checked 2026-09-30; fill blank current_name cells in data/vol2-3-nia-leadership.csv to refresh."
 
       - name: Add results to the job summary
         run: cat reports/report.md >> "$GITHUB_STEP_SUMMARY"

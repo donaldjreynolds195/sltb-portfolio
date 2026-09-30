@@ -2,7 +2,9 @@
 
     python -m linkcheck.drift data/vol1-leadership.csv --out reports/leadership-drift.md
 
-Input CSV columns: role_key, role, pdf_page, book_name, current_name.
+Input CSV columns: role_key, role, pdf_page, book_name, current_name, and an
+optional note. Leave current_name blank when it could not be verified; the
+row is reported as UNKNOWN instead of guessed.
 Names are matched on surname + first initial, ignoring credentials,
 middle initials and "(Acting)", so "Richard Hodes, M.D." and
 "Richard J. Hodes, M.D." count as the same person.
@@ -51,20 +53,23 @@ def compare(rows: list[dict]) -> list[dict]:
 def to_markdown(results: list[dict], source_note: str) -> str:
     changed = [r for r in results if r["status"] == "CHANGED"]
     same = [r for r in results if r["status"] == "SAME"]
+    unknown = [r for r in results if r["status"] == "UNKNOWN"]
     acting = [r for r in results if r["current_acting"]]
     total = len(results)
     lines = [
         "# Leadership drift report", "",
         source_note, "",
-        f"**{len(changed)} of {total}** positions in the book now have a different "
-        f"person ({len(changed) / total:.0%}). {len(same)} unchanged. "
+        f"**{len(changed)} of {total - len(unknown)}** verified positions now have a "
+        f"different person ({len(changed) / max(total - len(unknown), 1):.0%}). {len(same)} unchanged"
+        + (f", {len(unknown)} not verified" if unknown else "") + ". "
         f"{len(acting)} positions are currently held in an acting capacity.", "",
-        "| Role | PDF page | In the book | Current | Status |",
-        "|---|---|---|---|---|",
+        "| Role | PDF page | In the book | Current | Status | Note |",
+        "|---|---|---|---|---|---|",
     ]
-    for r in sorted(results, key=lambda r: (r["status"] != "CHANGED", int(r["pdf_page"]))):
+    order = ["CHANGED", "SAME", "UNKNOWN"]
+    for r in sorted(results, key=lambda r: (order.index(r["status"]), int(r["pdf_page"]))):
         lines.append(f"| {r['role_key']} | {r['pdf_page']} | {r['book_name']} | "
-                     f"{r['current_name'] or '-'} | {r['status']} |")
+                     f"{r['current_name'] or '-'} | {r['status']} | {r.get('note') or ''} |")
     lines.append("")
     return "\n".join(lines)
 
