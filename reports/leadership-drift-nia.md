@@ -1,6 +1,6 @@
 # Leadership drift report
 
-Book roster from SLTB Vol 2 (current as of 22 Oct 2024) and Vol 3 (current as of 1 Dec 2024). Current roster checked against nia.nih.gov on 2026-09-30; several NIA pages refuse automated requests, so unverified roles are left UNKNOWN rather than guessed.
+Book roster from SLTB Vol 2 (22 Oct 2024) and Vol 3 (1 Dec 2024). Current roster last checked 2026-09-30; fill blank current_name cells in data/vol2-3-nia-leadership.csv to refresh.
 
 **1 of 3** verified positions now have a different person (33%). 2 unchanged, 7 not verified. 0 positions are currently held in an acting capacity.
 

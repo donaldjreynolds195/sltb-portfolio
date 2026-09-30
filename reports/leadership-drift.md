@@ -1,6 +1,6 @@
 # Leadership drift report
 
-Book roster transcribed from SLTB Vol 1 (PDF pages 3 and 10-11); the same roster is repeated in DAB Essentials. Current roster from nih.gov/about-nih/organization/nih-leadership and nih.gov/institutes-nih/directors-nih-institutes-centers, captured 2026-09-30. Associate Directors and Chief of Staff are not listed on the current pages, so they are not compared.
+Book roster transcribed from SLTB Vol 1 (repeated in DAB Essentials). Current roster last captured 2026-09-30; update data/vol1-leadership.csv to refresh.
 
 **22 of 33** verified positions now have a different person (67%). 11 unchanged. 14 positions are currently held in an acting capacity.
 
