@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Volume PDFs and InDesign packages stay out of the repo by default:
+# they contain licensed stock photography. Commit only redacted versions.
+volumes/*.pdf
+volumes/*.indd
+volumes/*.idml
+volumes/**/Links/
+volumes/**/Document fonts/
