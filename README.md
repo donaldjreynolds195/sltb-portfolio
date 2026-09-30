@@ -68,17 +68,32 @@ package that measures that decay.
 
 ### First-run findings (all four volumes, 2026-09-30)
 
-- nih.gov moved `/about-nih/who-we-are/` and `/about-nih/what-we-do/` under
-  `/about-nih/organization/`. That one restructuring affects **8 of 22** content
-  pages in Vol 1 and several director links in DAB Essentials.
+First live check, run by GitHub Actions against 61 unique URLs:
+
+| Status | URLs | What it means |
+|---|---|---|
+| OK | 25 | Page loads at the same address |
+| REDIRECT | 8 | Page moved; the old link still forwards |
+| RESTRICTED | 20 | Blocks automated checks (13 on nia.nih.gov), or now sits behind a login |
+| BROKEN | 7 | 404, page gone |
+| ERROR | 1 | Host doesn't exist (the typo below) |
+
+- **The book's main NIH leadership link is dead.** `nih.gov/about-nih/who-we-are/nih-leadership`
+  returns 404 and is cited on 8 pages across Vol 1 and DAB Essentials. nih.gov moved
+  that section to `/about-nih/organization/`. The HR contacts pages and the payroll FAQ
+  are also 404.
+- **Links now point to different people.** The NIDCR director link in DAB Essentials
+  (Rena D'Souza) now redirects to her successor's bio page, and the NIAMS "about the
+  director" link lands on the deputy director's page.
+- **One page moved behind a login.** NIH's dismissal and closure procedures (Vol 2,
+  5 pages) now redirect to the NIH Microsoft sign-in, so a new leader without NIH
+  credentials can't open them.
 - **22 of 33** NIH leadership positions (67%) now have a different person,
   including the NIH Director, 4 of 5 Deputy Directors, and 17 of 27 IC directors.
-  DAB Essentials repeats this roster and links to each director's bio page;
-  15 of those URLs have a person's name in them, the kind of link most likely to break.
-- At NIA the Director and Deputy Director are unchanged; the Division of Aging
+  At NIA the Director and Deputy Director are unchanged; the Division of Aging
   Biology has a new director, and the Division of Neuroscience is recruiting one.
 - **A typo the audit caught:** Vol 2's "About NIA" pages cite `www.nih.nih.gov/about`
-  instead of `www.nia.nih.gov/about`.
+  instead of `www.nia.nih.gov/about`. That host doesn't resolve.
 - Hundreds of anchor-text links in Vols 1–3 could not be audited because those PDFs
   were flattened. Re-exporting from InDesign as *Adobe PDF (Interactive)* fixes that.
 

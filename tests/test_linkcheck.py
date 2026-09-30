@@ -56,6 +56,19 @@ def test_classify(url, code, final, hops, expected):
     assert classify(url, code, final, hops)[0] == expected
 
 
+def test_bot_block_405_is_restricted_not_broken():
+    # Real case from the first CI run: every nia.nih.gov page returned 405
+    assert classify("https://www.nia.nih.gov/research/dab", 405,
+                    "https://www.nia.nih.gov/research/dab", 0)[0] == RESTRICTED
+
+
+def test_redirect_to_sign_in_is_restricted():
+    # Real case: hr.nih.gov dismissal procedures now bounce to NIH's Microsoft login
+    status, note = classify("https://hr.nih.gov/working-nih/dismissal-and-closures/procedures", 200,
+                            "https://login.microsoftonline.com:443/abc/oauth2", 3)
+    assert status == RESTRICTED and "sign-in" in note
+
+
 def test_trailing_slash_redirect_is_ok():
     assert classify("https://a.gov/x", 200, "https://a.gov/x/", 1)[0] == OK
 

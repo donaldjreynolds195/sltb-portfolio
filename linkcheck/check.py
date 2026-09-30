@@ -40,11 +40,20 @@ def _looks_like_soft_404(original: str, final: str) -> bool:
     return bool(o.path.strip("/")) and final_path == "" and o.netloc == f.netloc
 
 
+LOGIN_HOSTS = ("login.microsoftonline.com", "auth.nih.gov", "iam.nih.gov", "login.gov")
+
+
 def classify(url: str, code: int | None, final_url: str, hops: int) -> tuple[str, str]:
     if code is None:
         return ERROR, ""
     if code in (401, 403):
         return RESTRICTED, "access denied - may be intranet-only or bot-blocked"
+    if code in (405, 429):
+        # Some sites (nia.nih.gov) answer every scripted request, GET included,
+        # with 405. The page may be fine in a browser, so don't call it dead.
+        return RESTRICTED, f"{code} to automated requests - check in a browser"
+    if hops and (urlparse(final_url).hostname or "") in LOGIN_HOSTS:
+        return RESTRICTED, "now redirects to a sign-in page (moved behind login)"
     if code >= 400:
         return BROKEN, ""
     if hops and _looks_like_soft_404(url, final_url):
