@@ -1,6 +1,6 @@
 # Link audit report
 
-Generated 2026-10-01 18:53 UTC.
+Generated 2026-11-01 18:25 UTC.
 
 ## Volumes scanned
 
@@ -19,8 +19,8 @@ Generated 2026-10-01 18:53 UTC.
 |---|---|
 | BROKEN | 7 |
 | ERROR | 1 |
-| RESTRICTED | 20 |
-| REDIRECT | 8 |
+| RESTRICTED | 19 |
+| REDIRECT | 9 |
 | OK | 25 |
 | **Total** | **61** |
 
@@ -36,7 +36,6 @@ Generated 2026-10-01 18:53 UTC.
 | BROKEN | 404 | https://www.nih.gov/about-nih/who-we-are/nih-leadership | SLTB-vol-1 p3, SLTB-vol-1 p4, SLTB-vol-1 p5, SLTB-vol-1 p6, SLTB-vol-1 p7, SLTB-vol-1 p8, SLTB-vol-4 p3, SLTB-vol-4 p4 |  |
 | BROKEN | 404 | https://www.nih.gov/about-nih/who-we-are/organization | SLTB-vol-1 p9 |  |
 | ERROR | - | https://www.nih.nih.gov/about | SLTB-vol-2 p4, SLTB-vol-2 p5, SLTB-vol-2 p6 | ConnectionError: HTTPSConnectionPool(host='www.nih.nih.gov', port=443): Max retries exceeded with url: /about (Caused by NameResolutionError("HTTPSConnection(host='www.nih.nih.gov', port=443): Failed  |
-| RESTRICTED | 403 | https://cit.nih.gov/about-cit/leadership | SLTB-vol-4 p6 | access denied - may be intranet-only or bot-blocked |
 | RESTRICTED | 200 | https://hr.nih.gov/working-nih/dismissal-and-closures/procedures | SLTB-vol-2 p18, SLTB-vol-2 p19, SLTB-vol-2 p20, SLTB-vol-2 p21, SLTB-vol-2 p22 | now redirects to a sign-in page (moved behind login) |
 | RESTRICTED | 403 | https://www.cc.nih.gov/about/senior-staff/james-gilman | SLTB-vol-4 p6, SLTB-vol-4 p6 | access denied - may be intranet-only or bot-blocked |
 | RESTRICTED | 403 | https://www.genome.gov/About-NHGRI/Director | SLTB-vol-4 p5, SLTB-vol-4 p5 | access denied - may be intranet-only or bot-blocked |
@@ -56,6 +55,7 @@ Generated 2026-10-01 18:53 UTC.
 | RESTRICTED | 403 | https://www.niaid.nih.gov/about/director | SLTB-vol-4 p5, SLTB-vol-4 p5 | access denied - may be intranet-only or bot-blocked |
 | RESTRICTED | 403 | https://www.nih.gov/about-nih/visitor-information/maps | SLTB-vol-1 p22 | access denied - may be intranet-only or bot-blocked |
 | RESTRICTED | 403 | https://www.ninr.nih.gov/aboutninr/shannon-n-zenk-phd-mph-rn-faan | SLTB-vol-4 p6, SLTB-vol-4 p6 | access denied - may be intranet-only or bot-blocked |
+| REDIRECT | 200 | https://cit.nih.gov/about-cit/leadership | SLTB-vol-4 p6 | https://tech.nih.gov |
 | REDIRECT | 200 | https://public.csr.nih.gov/AboutCSR/Director | SLTB-vol-4 p6 | https://public.csr.nih.gov/AboutCSR/StaffDirectory/2085 |
 | REDIRECT | 200 | https://www.nei.nih.gov/about/nei-leadership/michael-f-chiang-md | SLTB-vol-4 p5, SLTB-vol-4 p5 | https://www.nei.nih.gov/about/nei-leadership/michael-f-chiang |
 | REDIRECT | 200 | https://www.niams.nih.gov/about/about-the-director | SLTB-vol-4 p5, SLTB-vol-4 p5 | https://www.niams.nih.gov/about/niams-leadership/deputy-director |
